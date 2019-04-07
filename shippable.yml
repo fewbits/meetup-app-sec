@@ -27,6 +27,9 @@ jobs:
       ## Se o IP mudar, precisamos executar esta atividade novamente
       - IN: vm_test
         switch: on
+      # Integração com a CloudFlare (basicamente e-mail e chave de API)
+      - IN: cloudflare
+        switch: off
       # Agora é a tarefa...
       - TASK:
           name: dns_test
@@ -38,4 +41,4 @@ jobs:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
             # Chamo a automação
-            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip}"
+            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
