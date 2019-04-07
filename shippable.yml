@@ -1,8 +1,42 @@
 ---
 resources:
+  # Um objeto que representa este repositório
+  ## Apenas no CI os repositórios são baixados automaticamente
+  ## Em workflows, você precisa definir os repositórios e solicitar o download
+  - name: meetup-app-sec
+    type: gitRepo
+    integration: github
+    versionTemplate:
+      sourceName: fewbits/meetup-app-sec
+      branch: master
+
   # Integração com a Cloudflare (basicamente e-mail e chave da API)
   - name: cloudflare
     type: integration
     integration: cloudflare
 
 jobs:
+  # Atualizar o DNS
+  - name: dns_test
+    type: runSh
+    steps:
+      # Vou usar este repositório
+      - IN: meetup-app-sec
+        switch: on
+      # Essa atividade está associada com o IP da VM de Testes
+      ## Se o IP mudar, precisamos executar esta atividade novamente
+      - IN: vm_test
+        switch: on
+      # Agora é a tarefa...
+      - TASK:
+          name: dns_test
+          runtime:
+            options:
+              env:
+                - meetup_env: test
+          script:
+            # Solicito dados do repositório
+            - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
+            # Chamo a automação
+            - env
+            # - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip="

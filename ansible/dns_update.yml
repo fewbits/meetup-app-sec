@@ -1,0 +1,13 @@
+---
+- name: DNS Update
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Updating entry at CloudFlare
+      cloudflare_dns:
+        zone: lowbit.com.br
+        record: "meetup-{{ meetup_env }}"
+        type: A
+        value: "{{ meetup_vm_ip }}"
+        account_email: "{{ cloudflare_email }}"
+        account_api_token: "{{ cloudflare_api }}"
