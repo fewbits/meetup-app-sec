@@ -16,7 +16,7 @@ resources:
     integration: cloudflare
 
 jobs:
-  # Atualizar o DNS
+  # Atualizar o DNS do ambiente de Testes
   - name: dns_test
     type: runSh
     steps:
@@ -37,6 +37,33 @@ jobs:
             options:
               env:
                 - meetup_env: test
+          script:
+            # Solicito dados do repositório
+            - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
+            # Chamo a automação
+            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+
+  # Atualizar o DNS do ambiente de Produção
+  - name: dns_prod
+    type: runSh
+    steps:
+      # Vou usar este repositório
+      - IN: meetup-app-sec
+        switch: on
+      # Essa atividade está associada com o IP da VM de Produção
+      ## Se o IP mudar, precisamos executar esta atividade novamente
+      - IN: vm_prod
+        switch: on
+      # Integração com a CloudFlare (basicamente e-mail e chave de API)
+      - IN: cloudflare
+        switch: off
+      # Agora é a tarefa...
+      - TASK:
+          name: dns_prod
+          runtime:
+            options:
+              env:
+                - meetup_env: prod
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
