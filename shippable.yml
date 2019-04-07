@@ -47,9 +47,9 @@ jobs:
   - name: dns_prod
     type: runSh
     steps:
-      # Vou usar este repositório
+      # Vou usar este repositório, mas não será um gatilho
       - IN: meetup-app-sec
-        switch: on
+        switch: off
       # Essa atividade está associada com o IP da VM de Produção
       ## Se o IP mudar, precisamos executar esta atividade novamente
       - IN: vm_prod
