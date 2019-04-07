@@ -1,0 +1,8 @@
+---
+resources:
+  # Integração com a Cloudflare (basicamente e-mail e chave da API)
+  - name: cloudflare
+    type: integration
+    integration: cloudflare
+
+jobs:
