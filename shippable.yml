@@ -38,5 +38,4 @@ jobs:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
             # Chamo a automação
-            - env
-            # - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip="
+            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip}"
