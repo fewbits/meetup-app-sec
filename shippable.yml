@@ -54,6 +54,8 @@ jobs:
       ## Se o IP mudar, precisamos executar esta atividade novamente
       - IN: vm_prod
         switch: on
+      # Mais um gatilho: Tarefa de criação da VM de Produção
+      - IN: vm_prod_create
       # Integração com a CloudFlare (basicamente e-mail e chave de API)
       - IN: cloudflare
         switch: off
