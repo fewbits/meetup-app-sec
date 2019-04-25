@@ -6,7 +6,7 @@
     - name: Updating entry at CloudFlare
       cloudflare_dns:
         zone: lowbit.com.br
-        record: "meetup-{{ meetup_env }}"
+        record: "qconsp-{{ meetup_env }}"
         type: A
         value: "{{ meetup_vm_ip }}"
         solo: true
