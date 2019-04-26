@@ -71,3 +71,22 @@ jobs:
             - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
             # Chamo a automação
             - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+
+  # Criar imagem oficial da empresa
+  - name: os_image
+    type: runSh
+    steps:
+      # Vou usar este repositório (é gatilho)
+      - IN: meetup-app-sec
+        switch: on
+      # Integração com a Google Cloud (não é gatilho)
+      - IN: google_cloud
+        switch: off
+      # Agora é a tarefa...
+      - TASK:
+          name: os_image
+          script:
+            # Solicito dados do repositório
+            - pushd $(shipctl get_resource_state "meetup-app-sec")/packer
+            # Chamo o packer
+            - packer build official-image.json

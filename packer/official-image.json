@@ -1,0 +1,25 @@
+{
+  "builders": [
+    {
+      "type": "googlecompute",
+      "project_id": "united-strategy-231002",
+      "source_image_family": "centos-7",
+      "image_name": "official-image",
+      "machine_type": "f1-micro",
+      "disk_size": "10",
+      "ssh_username": "centos",
+      "zone": "us-central1-a",
+      "metadata": { "enable-oslogin": "false" }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo yum install yum-security",
+        "yum update --security",
+        "sudo systemctl disable crond.service"
+      ]
+    }
+  ]
+}
