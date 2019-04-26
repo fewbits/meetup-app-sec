@@ -92,6 +92,8 @@ jobs:
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/packer
+            # Versiono o nome da imagem de acordo com a build
+            - shipctl replace official-image.json
             # Solicito informações de autenticação com a Google Cloud
             - echo $(shipctl get_integration_resource_field google_cloud JSON_key) > $GCE_CREDENTIALS_FILE_PATH
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
