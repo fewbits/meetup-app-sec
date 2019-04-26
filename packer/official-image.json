@@ -16,8 +16,7 @@
     {
       "type": "shell",
       "inline": [
-        "sudo yum install yum-security",
-        "yum update --security",
+        "sudo yum update --security",
         "sudo systemctl disable crond.service"
       ]
     }
