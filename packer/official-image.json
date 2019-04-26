@@ -4,7 +4,7 @@
       "type": "googlecompute",
       "project_id": "united-strategy-231002",
       "source_image_family": "centos-7",
-      "image_name": "official-image",
+      "image_name": "official-image-1",
       "machine_type": "f1-micro",
       "disk_size": "10",
       "ssh_username": "centos",
