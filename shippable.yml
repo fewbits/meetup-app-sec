@@ -85,8 +85,14 @@ jobs:
       # Agora é a tarefa...
       - TASK:
           name: os_image
+          runtime:
+            options:
+              env:
+                - GCE_CREDENTIALS_FILE_PATH: "gcp_key.json"
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/packer
+            # Solicito informações de autenticação com a Google Cloud
+            - echo $(shipctl get_integration_resource_field google_cloud JSON_key) > $GCE_CREDENTIALS_FILE_PATH
             # Chamo o packer
             - packer build official-image.json
