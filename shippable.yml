@@ -90,6 +90,8 @@ jobs:
         switch: off
       # A saída é a versão da imagem
       - OUT: os_image_version
+      # Outra saída é um job
+      - OUT: dns_test
       # Agora é a tarefa...
       - TASK:
           name: os_image_create
@@ -107,7 +109,7 @@ jobs:
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
             # Chamo o packer
             - packer build official-image.json
-          on_sucess:
-            # Versionando a imagem
-            - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
+      on_sucess:
+        # Versionando a imagem
+        - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
 
