@@ -107,6 +107,7 @@ jobs:
             - packer build official-image.json
       # A saída é a versão da imagem
       - OUT: os_image_version
+        overwrite: true
     on_sucess:
       script:
         # Versionando a imagem
