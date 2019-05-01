@@ -15,6 +15,12 @@ resources:
     type: integration
     integration: cloudflare
 
+  # Informações sobre a imagem de Sistema Operacional oficial da empresa
+  - name: os_image_version
+    type: version
+    versionTemplate:
+      versionName: "0"
+
 jobs:
   # Atualizar o DNS do ambiente de Testes
   - name: dns_test
@@ -73,7 +79,7 @@ jobs:
             - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
   # Criar imagem oficial da empresa
-  - name: os_image
+  - name: os_image_create
     type: runSh
     steps:
       # Vou usar este repositório (é gatilho)
@@ -84,7 +90,7 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: os_image
+          name: os_image_create
           runtime:
             options:
               env:
@@ -93,12 +99,11 @@ jobs:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "meetup-app-sec")/packer
             # Versiono o nome da imagem de acordo com a versão do job
-            - export OS_IMAGE_VERSION="$(shipctl get_resource_version_number "os_image")"
             - shipctl replace official-image.json
             # Solicito informações de autenticação com a Google Cloud
             - echo $(shipctl get_integration_resource_field google_cloud JSON_key) > $GCE_CREDENTIALS_FILE_PATH
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
             # Chamo o packer
-            - env
-            # - packer build official-image.json
+            - packer build official-image.json
+            - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
 
