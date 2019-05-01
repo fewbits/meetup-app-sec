@@ -88,8 +88,6 @@ jobs:
       # Integração com a Google Cloud (não é gatilho)
       - IN: google_cloud
         switch: off
-      # A saída é a versão da imagem
-      - OUT: os_image_version
       # Agora é a tarefa...
       - TASK:
           name: os_image_create
@@ -107,6 +105,8 @@ jobs:
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
             # Chamo o packer
             - packer build official-image.json
+      # A saída é a versão da imagem
+      - OUT: os_image_version
     on_sucess:
       script:
         # Versionando a imagem
