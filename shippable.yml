@@ -98,5 +98,6 @@ jobs:
             - echo $(shipctl get_integration_resource_field google_cloud JSON_key) > $GCE_CREDENTIALS_FILE_PATH
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
             # Chamo o packer
-            - packer build official-image.json
+            - env
+            # - packer build official-image.json
 
