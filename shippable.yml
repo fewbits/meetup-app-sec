@@ -90,8 +90,6 @@ jobs:
         switch: off
       # A saída é a versão da imagem
       - OUT: os_image_version
-      # Após a criação da imagem, precisamos utilizá-la no ambiente de testes
-      - OUT: vm_test_create
       # Agora é a tarefa...
       - TASK:
           name: os_image_create
