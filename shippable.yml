@@ -109,7 +109,7 @@ jobs:
             - export GOOGLE_APPLICATION_CREDENTIALS=${GCE_CREDENTIALS_FILE_PATH}
             # Chamo o packer
             - packer build official-image.json
-      on_sucess:
-        # Versionando a imagem
-        - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
+    on_sucess:
+      # Versionando a imagem
+      - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
 
