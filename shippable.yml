@@ -26,13 +26,13 @@ jobs:
   - name: dns_test
     type: runSh
     steps:
-      # Vou usar este repositório
-      - IN: meetup-app-sec
-        switch: on
       # Essa atividade está associada com o IP da VM de Testes
-      ## Se o IP mudar, precisamos executar esta atividade novamente
+      ## Se o IP mudar, precisamos executar esta atividade
       - IN: vm_test
         switch: on
+      # Vou usar este repositório
+      - IN: meetup-app-sec
+        switch: off
       # Integração com a CloudFlare (basicamente e-mail e chave de API)
       - IN: cloudflare
         switch: off
@@ -53,15 +53,15 @@ jobs:
   - name: dns_prod
     type: runSh
     steps:
-      # Vou usar este repositório, mas não será um gatilho
-      - IN: meetup-app-sec
-        switch: off
       # Essa atividade está associada com o IP da VM de Produção
-      ## Se o IP mudar, precisamos executar esta atividade novamente
+      ## Se o IP mudar, precisamos executar esta atividade
       - IN: vm_prod
         switch: on
+      # Vou usar este repositório
+      - IN: meetup-app-sec
+        switch: off
       # Mais um gatilho: Tarefa de criação da VM de Produção
-      - IN: vm_prod_create
+      # - IN: vm_prod_create
       # Integração com a CloudFlare (basicamente e-mail e chave de API)
       - IN: cloudflare
         switch: off
