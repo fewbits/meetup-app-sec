@@ -25,6 +25,7 @@ jobs:
   # Atualizar o DNS do ambiente de Testes
   - name: dns_test
     type: runSh
+    priority: 100
     steps:
       # Essa atividade está associada com o IP da VM de Testes
       ## Se o IP mudar, precisamos executar esta atividade
@@ -52,6 +53,7 @@ jobs:
   # Atualizar o DNS do ambiente de Produção
   - name: dns_prod
     type: runSh
+    priority: 100
     steps:
       # Essa atividade está associada com o IP da VM de Produção
       ## Se o IP mudar, precisamos executar esta atividade
