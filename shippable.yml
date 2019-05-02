@@ -3,11 +3,11 @@ resources:
   # Um objeto que representa este repositório
   ## Apenas no CI os repositórios são baixados automaticamente
   ## Em workflows, você precisa definir os repositórios e solicitar o download
-  - name: meetup-app-sec
+  - name: qconsp-sec
     type: gitRepo
     integration: github
     versionTemplate:
-      sourceName: fewbits/meetup-app-sec
+      sourceName: fewbits/qconsp-sec
       branch: master
 
   # Integração com a Cloudflare (basicamente e-mail e chave da API)
@@ -32,7 +32,7 @@ jobs:
       - IN: vm_test
         switch: on
       # Vou usar este repositório
-      - IN: meetup-app-sec
+      - IN: qconsp-sec
         switch: off
       # Integração com a CloudFlare (basicamente e-mail e chave de API)
       - IN: cloudflare
@@ -46,7 +46,7 @@ jobs:
                 - meetup_env: test
           script:
             # Solicito dados do repositório
-            - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
+            - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
             # Chamo a automação
             - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
@@ -60,7 +60,7 @@ jobs:
       - IN: vm_prod
         switch: on
       # Vou usar este repositório
-      - IN: meetup-app-sec
+      - IN: qconsp-sec
         switch: off
       # Mais um gatilho: Tarefa de criação da VM de Produção
       # - IN: vm_prod_create
@@ -76,7 +76,7 @@ jobs:
                 - meetup_env: prod
           script:
             # Solicito dados do repositório
-            - pushd $(shipctl get_resource_state "meetup-app-sec")/ansible
+            - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
             # Chamo a automação
             - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
@@ -85,7 +85,7 @@ jobs:
     type: runSh
     steps:
       # Vou usar este repositório (é gatilho)
-      - IN: meetup-app-sec
+      - IN: qconsp-sec
         switch: on
       # Integração com a Google Cloud (não é gatilho)
       - IN: google_cloud
@@ -99,7 +99,7 @@ jobs:
                 - GCE_CREDENTIALS_FILE_PATH: "gcp_key.json"
           script:
             # Solicito dados do repositório
-            - pushd $(shipctl get_resource_state "meetup-app-sec")/packer
+            - pushd $(shipctl get_resource_state "qconsp-sec")/packer
             # Versiono o nome da imagem de acordo com a versão do job
             - shipctl replace official-image.json
             # Solicito informações de autenticação com a Google Cloud
