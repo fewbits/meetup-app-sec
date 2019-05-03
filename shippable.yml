@@ -112,6 +112,7 @@ jobs:
   # Criar imagem oficial da empresa
   - name: os_image_create
     type: runSh
+    priority: 50
     steps:
       # Vou usar este repositório (é gatilho)
       - IN: qconsp-sec
