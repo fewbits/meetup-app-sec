@@ -72,7 +72,7 @@ jobs:
           runtime:
             options:
               env:
-                - serfice_name: app
+                - service_name: app
                 - service_env: prod
           script:
             # Solicito dados do repositório
