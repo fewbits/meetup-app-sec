@@ -23,7 +23,7 @@ resources:
 
 jobs:
   # Atualizar o DNS do ambiente de Testes
-  - name: dns_test
+  - name: dns_config_test
     type: runSh
     priority: 100
     steps:
@@ -39,7 +39,7 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: dns_test
+          name: dns_config_test
           runtime:
             options:
               env:
@@ -51,7 +51,7 @@ jobs:
             - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
   # Atualizar o DNS do ambiente de Produção
-  - name: dns_prod
+  - name: dns_config_prod
     type: runSh
     priority: 100
     steps:
@@ -69,11 +69,39 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: dns_prod
+          name: dns_config_prod
           runtime:
             options:
               env:
                 - meetup_env: prod
+          script:
+            # Solicito dados do repositório
+            - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
+            # Chamo a automação
+            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+
+  # Atualizar o DNS do site
+  - name: dns_config_site
+    type: runSh
+    priority: 100
+    steps:
+      # Essa atividade está associada com o IP da VM do Site
+      ## Se o IP mudar, precisamos executar esta atividade
+      - IN: vm_site
+        switch: on
+      # Vou usar este repositório
+      - IN: qconsp-sec
+        switch: off
+      # Integração com a CloudFlare (basicamente e-mail e chave de API)
+      - IN: cloudflare
+        switch: off
+      # Agora é a tarefa...
+      - TASK:
+          name: dns_config_site
+          runtime:
+            options:
+              env:
+                - meetup_env: site
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
