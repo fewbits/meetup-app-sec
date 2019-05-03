@@ -29,7 +29,7 @@ jobs:
     steps:
       # Essa atividade está associada com o IP da VM de Testes
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_test
+      - IN: vm_test_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
@@ -57,13 +57,11 @@ jobs:
     steps:
       # Essa atividade está associada com o IP da VM de Produção
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_prod
+      - IN: vm_prod_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
         switch: off
-      # Mais um gatilho: Tarefa de criação da VM de Produção
-      # - IN: vm_prod_create
       # Integração com a CloudFlare (basicamente e-mail e chave de API)
       - IN: cloudflare
         switch: off
@@ -87,7 +85,7 @@ jobs:
     steps:
       # Essa atividade está associada com o IP da VM do Site
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_site
+      - IN: vm_site_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
