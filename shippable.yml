@@ -16,20 +16,20 @@ resources:
     integration: cloudflare
 
   # Informações sobre a imagem de Sistema Operacional oficial da empresa
-  - name: os_image_version
+  - name: os_image
     type: version
     versionTemplate:
       versionName: "0"
 
 jobs:
-  # Atualizar o DNS do ambiente de Testes
-  - name: dns_config_test
+  # Atualizar o DNS do ambiente de Testes da Aplicação
+  - name: dns_app_test
     type: runSh
     priority: 100
     steps:
-      # Essa atividade está associada com o IP da VM de Testes
+      # Essa atividade está associada com o IP da VM de Testes da Aplicação
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_test_ip
+      - IN: vm_app_test_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
@@ -39,25 +39,26 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: dns_config_test
+          name: dns_app_test
           runtime:
             options:
               env:
-                - meetup_env: test
+                - service_name: app
+                - service_env: test
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
             # Chamo a automação
-            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+            - ansible-playbook dns_update.yml --extra-vars "service_name=${service_name} service_env=${service_env} vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
-  # Atualizar o DNS do ambiente de Produção
-  - name: dns_config_prod
+  # Atualizar o DNS do ambiente de Produção da Aplicação
+  - name: dns_app_prod
     type: runSh
     priority: 100
     steps:
-      # Essa atividade está associada com o IP da VM de Produção
+      # Essa atividade está associada com o IP da VM de Produção da Aplicação
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_prod_ip
+      - IN: vm_app_prod_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
@@ -67,25 +68,26 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: dns_config_prod
+          name: dns_app_prod
           runtime:
             options:
               env:
-                - meetup_env: prod
+                - serfice_name: app
+                - service_env: prod
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
             # Chamo a automação
-            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+            - ansible-playbook dns_update.yml --extra-vars "service_name=${service_name} service_env=${service_env} vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
-  # Atualizar o DNS do site
-  - name: dns_config_site
+  # Atualizar o DNS do ambiente de Produção do Site
+  - name: dns_site_prod
     type: runSh
     priority: 100
     steps:
-      # Essa atividade está associada com o IP da VM do Site
+      # Essa atividade está associada com o IP da VM de Produção da Aplicação
       ## Se o IP mudar, precisamos executar esta atividade
-      - IN: vm_site_ip
+      - IN: vm_site_prod_ip
         switch: on
       # Vou usar este repositório
       - IN: qconsp-sec
@@ -95,16 +97,17 @@ jobs:
         switch: off
       # Agora é a tarefa...
       - TASK:
-          name: dns_config_site
+          name: dns_site_prod
           runtime:
             options:
               env:
-                - meetup_env: site
+                - service_name: site
+                - service_env: prod
           script:
             # Solicito dados do repositório
             - pushd $(shipctl get_resource_state "qconsp-sec")/ansible
             # Chamo a automação
-            - ansible-playbook dns_update.yml --extra-vars "meetup_env=${meetup_env} meetup_vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
+            - ansible-playbook dns_update.yml --extra-vars "service_name=${service_name} service_env=${service_env} vm_ip=${external_ip} cloudflare_email=${cloudflare_email} cloudflare_api=${cloudflare_api}"
 
   # Criar imagem oficial da empresa
   - name: os_image_create
@@ -134,7 +137,7 @@ jobs:
             # Chamo o packer
             - packer build official-image.json
             # Versionando a imagem
-            - shipctl put_resource_state os_image_version versionName $BUILD_NUMBER
+            - shipctl put_resource_state os_image versionName $BUILD_NUMBER
       # A saída é a versão da imagem
-      - OUT: os_image_version
+      - OUT: os_image
         overwrite: true
